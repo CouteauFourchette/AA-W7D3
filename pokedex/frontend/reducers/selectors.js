@@ -6,5 +6,9 @@ export const selectAllPokemon = (state) => {
 };
 
 export const selectOnePokemon = (state) => {
-  return state.entities.pokemon.pokemon;
+  return state.entities.pokemon[state.ui.pokemonId];
+};
+
+export const selectPokemonItem = (state) => {
+  return state.entities.items;
 };

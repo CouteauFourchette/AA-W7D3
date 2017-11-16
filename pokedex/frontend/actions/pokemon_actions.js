@@ -13,11 +13,11 @@ export const requestAllPokemon = () => dispatch => (
   fetchAllPokemon().then(pokemon => dispatch(receiveAllPokemon(pokemon)))
 );
 
-export const receiveOnePokemon = pokemon => ({
+export const receiveOnePokemon = payload => ({
   type: RECEIVE_ONE_POKEMON,
-  pokemon
+  payload: payload
 });
 
 export const requestOnePokemon = (pokemonId) => dispatch => (
-  fetchOnePokemon(pokemonId).then(pokemon => dispatch(receiveOnePokemon(pokemon)))
+  fetchOnePokemon(pokemonId).then(payload => dispatch(receiveOnePokemon(payload)))
 );
