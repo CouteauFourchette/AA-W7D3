@@ -4,6 +4,7 @@ import { configureStore } from './store/store';
 import { selectAllPokemon } from './reducers/selectors';
 import Root from './components/root';
 
+
 document.addEventListener("DOMContentLoaded", () => {
   const store = configureStore();
   window.getState = store.getState;
