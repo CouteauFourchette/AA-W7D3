@@ -9,6 +9,12 @@ export const selectOnePokemon = (state) => {
   return state.entities.pokemon[state.ui.pokemonId];
 };
 
-export const selectPokemonItem = (state) => {
-  return state.entities.items;
+export const selectPokemonItems = (state) => {
+  const itemIds = Object.keys(state.entities.items);
+  return itemIds.map(id =>state.entities.items[id]);
+};
+
+export const selectPokemonItem = (state, itemId) => {
+  console.log(state.entities.items);
+  return state.entities.items[itemId];
 };

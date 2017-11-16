@@ -3,9 +3,14 @@
 
 const itemsReducer = (state = {}, action) => {
   Object.freeze(state);
+  let newState = {};
   switch (action.type) {
     case RECEIVE_ONE_POKEMON:
-      return action.payload.items;
+      Object.keys(action.payload.items).forEach( id => {
+        const item = action.payload.items[id];
+        newState[item.id] = item;
+      });
+      return newState;
     default:
       return state;
   }

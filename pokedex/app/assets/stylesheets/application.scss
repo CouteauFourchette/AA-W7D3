@@ -38,7 +38,7 @@
      height: 43px;
    }
  }
- 
+
  ul{
    list-style-type: none;
  }
@@ -106,4 +106,68 @@
    font-size: 24px;
    text-align: center;
    color: $black;
+ }
+
+
+ .pokedex{
+   display: flex;
+   align-items: flex-start;
+   ul{
+     flex: 1;
+   }
+ }
+
+ .pokemon-detail{
+   flex: 2;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   border: 5px solid $red;
+   border-radius: 2%;
+   padding: 1%;
+
+   h1{
+     font-size: 2rem;
+     color: $red;
+   }
+   .img-description{
+     img {
+      height: 30vh;
+    }
+     display: flex;
+     justify-content: space-around;
+     width: 80%;
+   }
+
+ }
+
+ .item-list{
+   display: flex;
+   flex-direction: row;
+   justify-content: space-around;
+   width: 90%;
+   .active{
+     background-color: yellow;
+   }
+   li{
+     color: #fff;
+     height: 10vh;
+     width: 10vh;
+     a{
+       background-color: $red;
+       display: block;
+       border-radius: 50%;
+       height: inherit;
+       &:hover{
+         background-color: yellow;
+         border-radius: 50%;
+       }
+     }
+     img{
+       height: 80%;
+       padding: 8%;
+     }
+
+   }
  }

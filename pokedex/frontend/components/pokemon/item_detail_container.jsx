@@ -4,8 +4,8 @@ import { withRouter } from 'react-router';
 import ItemDetail from './item_detail';
 import { selectPokemonItem } from '../../reducers/selectors';
 
-const mapStateToProps = (state) => ({
-  items: selectPokemonItem(state)
+const mapStateToProps = (state, ownProps) => ({
+  item: selectPokemonItem(state, ownProps.match.params.itemId)
 });
 
 export default withRouter(connect(mapStateToProps, null)(ItemDetail));

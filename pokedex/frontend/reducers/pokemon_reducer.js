@@ -8,7 +8,8 @@ function pokemonReducer(state={}, action) {
     case RECEIVE_ALL_POKEMON:
       return action.pokemon;
     case RECEIVE_ONE_POKEMON:
-      return {[action.payload.pokemon.id]: action.payload.pokemon};
+    newState = {[action.payload.pokemon.id]: action.payload.pokemon};
+      return Object.assign({}, state, newState);
     default:
       return state;
   }

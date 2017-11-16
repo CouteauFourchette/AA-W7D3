@@ -1,7 +1,7 @@
 import React from 'react';
 
-const ItemDetail = ({items}) => (
-  <li>Hello world</li>
+const ItemDetail = ({ item }) => (
+  <li>{item ? item.name : ""}</li>
 );
 
 export default ItemDetail;

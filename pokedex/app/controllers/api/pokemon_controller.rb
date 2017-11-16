@@ -8,4 +8,16 @@ class Api::PokemonController < ApplicationController
     @pokemon = Pokemon.find(params[:id])
     render :show
   end
+
+  def create
+    @pokemon = Pokemon.new(pokemon_params)
+    if @pokemon.save
+      render :show
+    end
+  end
+
+  private
+  def pokemon_params
+    params.require(:pokemon).permit(:attack, :defense, :image_url, :name, :poke_type)
+  end
 end
