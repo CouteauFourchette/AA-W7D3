@@ -2,7 +2,7 @@ import { fetchAllPokemon, fetchOnePokemon, createOnePokemon } from '../util/api_
 
 export const RECEIVE_ALL_POKEMON = 'RECEIVE_ALL_POKEMON';
 export const RECEIVE_ONE_POKEMON = 'RECEIVE_ONE_POKEMON';
-
+export const RECEIVE_ERRORS = 'RECEIVE_ERRORS';
 
 
 export const receiveAllPokemon = pokemon => ({
@@ -24,5 +24,10 @@ export const requestOnePokemon = (pokemonId) => dispatch => (
 );
 
 export const makeOnePokemon = (pokemon) => dispatch => (
-  createOnePokemon(pokemon).then(payload => dispatch(receiveOnePokemon(payload)), error => console.log(error))
+  createOnePokemon(pokemon).then(payload => dispatch(receiveOnePokemon(payload)), errors => dispatch(receiveErrors(errors)))
 );
+
+export const receiveErrors = payload => ({
+  type: RECEIVE_ERRORS,
+  payload: payload
+});

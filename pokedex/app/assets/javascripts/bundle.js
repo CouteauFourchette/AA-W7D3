@@ -639,12 +639,13 @@ module.exports = invariant;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.makeOnePokemon = exports.requestOnePokemon = exports.receiveOnePokemon = exports.requestAllPokemon = exports.receiveAllPokemon = exports.RECEIVE_ONE_POKEMON = exports.RECEIVE_ALL_POKEMON = undefined;
+exports.receiveErrors = exports.makeOnePokemon = exports.requestOnePokemon = exports.receiveOnePokemon = exports.requestAllPokemon = exports.receiveAllPokemon = exports.RECEIVE_ERRORS = exports.RECEIVE_ONE_POKEMON = exports.RECEIVE_ALL_POKEMON = undefined;
 
 var _api_util = __webpack_require__(95);
 
 var RECEIVE_ALL_POKEMON = exports.RECEIVE_ALL_POKEMON = 'RECEIVE_ALL_POKEMON';
 var RECEIVE_ONE_POKEMON = exports.RECEIVE_ONE_POKEMON = 'RECEIVE_ONE_POKEMON';
+var RECEIVE_ERRORS = exports.RECEIVE_ERRORS = 'RECEIVE_ERRORS';
 
 var receiveAllPokemon = exports.receiveAllPokemon = function receiveAllPokemon(pokemon) {
   return {
@@ -680,9 +681,16 @@ var makeOnePokemon = exports.makeOnePokemon = function makeOnePokemon(pokemon) {
   return function (dispatch) {
     return (0, _api_util.createOnePokemon)(pokemon).then(function (payload) {
       return dispatch(receiveOnePokemon(payload));
-    }, function (error) {
-      return console.log(error);
+    }, function (errors) {
+      return dispatch(receiveErrors(errors));
     });
+  };
+};
+
+var receiveErrors = exports.receiveErrors = function receiveErrors(payload) {
+  return {
+    type: RECEIVE_ERRORS,
+    payload: payload
   };
 };
 
@@ -991,7 +999,7 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.selectPokemonItem = exports.selectPokemonItems = exports.selectOnePokemon = exports.selectAllPokemon = undefined;
+exports.selectErrors = exports.selectPokemonItem = exports.selectPokemonItems = exports.selectOnePokemon = exports.selectAllPokemon = undefined;
 
 var _values = __webpack_require__(100);
 
@@ -1018,8 +1026,14 @@ var selectPokemonItems = exports.selectPokemonItems = function selectPokemonItem
 };
 
 var selectPokemonItem = exports.selectPokemonItem = function selectPokemonItem(state, itemId) {
-  console.log(state.entities.items);
   return state.entities.items[itemId];
+};
+
+var selectErrors = exports.selectErrors = function selectErrors(state) {
+  var errorsIds = Object.keys(state.errors);
+  return errorsIds.map(function (id) {
+    return state.errors[id];
+  });
 };
 
 /***/ }),
@@ -22204,6 +22218,10 @@ var _entities_reducer = __webpack_require__(93);
 
 var _entities_reducer2 = _interopRequireDefault(_entities_reducer);
 
+var _errors_reducer = __webpack_require__(165);
+
+var _errors_reducer2 = _interopRequireDefault(_errors_reducer);
+
 var _ui_reducer = __webpack_require__(97);
 
 var _ui_reducer2 = _interopRequireDefault(_ui_reducer);
@@ -22212,7 +22230,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var rootReducer = (0, _redux.combineReducers)({
   entities: _entities_reducer2.default,
-  ui: _ui_reducer2.default
+  ui: _ui_reducer2.default,
+  errors: _errors_reducer2.default
 });
 
 exports.default = rootReducer;
@@ -27298,11 +27317,17 @@ var _reactRouter = __webpack_require__(27);
 
 var _pokemon_actions = __webpack_require__(8);
 
+var _selectors = __webpack_require__(15);
+
 var _pokemon_form = __webpack_require__(164);
 
 var _pokemon_form2 = _interopRequireDefault(_pokemon_form);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapStateToProps = function mapStateToProps(state) {
+  return { errors: (0, _selectors.selectErrors)(state) };
+};
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return { createOnePokemon: function createOnePokemon(pokemon) {
@@ -27310,7 +27335,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     } };
 };
 
-exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(null, mapDispatchToProps)(_pokemon_form2.default));
+exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_pokemon_form2.default));
 
 /***/ }),
 /* 164 */
@@ -27353,8 +27378,8 @@ var PokemonForm = function (_Component) {
 
     _this.state = {
       name: "",
-      attack: 0,
-      defense: 0,
+      attack: "",
+      defense: "",
       poke_type: "fire",
       image_url: ""
     };
@@ -27383,28 +27408,65 @@ var PokemonForm = function (_Component) {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        'form',
-        { onSubmit: this.handleSubmit },
-        _react2.default.createElement('input', { onChange: this.handleChange,
-          placeholder: 'name', name: 'name', type: 'text', value: this.state.name }),
-        _react2.default.createElement('input', { onChange: this.handleChange,
-          placeholder: 'attack', name: 'attack', type: 'text', value: this.state.attack }),
-        _react2.default.createElement('input', { onChange: this.handleChange,
-          placeholder: 'defense', name: 'defense', type: 'text', value: this.state.defense }),
+        'div',
+        { className: 'new-pokemon' },
+        this.props.errors.map(function (error) {
+          return error;
+        }),
         _react2.default.createElement(
-          'select',
-          { onChange: this.handleChange, name: 'poke_type', value: this.state.poke_type },
-          TYPES.map(function (type) {
-            return _react2.default.createElement(
-              'option',
-              { value: type },
-              type
-            );
-          })
+          'h1',
+          null,
+          'New Pokemon'
         ),
-        _react2.default.createElement('input', { onChange: this.handleChange,
-          placeholder: 'image url', name: 'image_url', type: 'text', value: this.state.image_url }),
-        _react2.default.createElement('input', { type: 'submit', value: 'Make Pokemon' })
+        _react2.default.createElement(
+          'form',
+          { onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            'label',
+            null,
+            'Name',
+            _react2.default.createElement('input', { onChange: this.handleChange,
+              placeholder: 'name', name: 'name', type: 'text', value: this.state.name })
+          ),
+          _react2.default.createElement(
+            'label',
+            null,
+            'Attack',
+            _react2.default.createElement('input', { onChange: this.handleChange,
+              placeholder: 'i.e. 72', name: 'attack', type: 'text', value: this.state.attack })
+          ),
+          _react2.default.createElement(
+            'label',
+            null,
+            'Defense',
+            _react2.default.createElement('input', { onChange: this.handleChange,
+              placeholder: 'i.e. 72', name: 'defense', type: 'text', value: this.state.defense })
+          ),
+          _react2.default.createElement(
+            'label',
+            null,
+            'Type',
+            _react2.default.createElement(
+              'select',
+              { onChange: this.handleChange, name: 'poke_type', value: this.state.poke_type },
+              TYPES.map(function (type) {
+                return _react2.default.createElement(
+                  'option',
+                  { value: type, key: type },
+                  type
+                );
+              })
+            )
+          ),
+          _react2.default.createElement(
+            'label',
+            null,
+            'Image URL',
+            _react2.default.createElement('input', { onChange: this.handleChange,
+              placeholder: 'image url', name: 'image_url', type: 'text', value: this.state.image_url })
+          ),
+          _react2.default.createElement('input', { type: 'submit', value: 'Make Pokemon' })
+        )
       );
     }
   }]);
@@ -27413,6 +27475,34 @@ var PokemonForm = function (_Component) {
 }(_react.Component);
 
 exports.default = (0, _reactRouterDom.withRouter)(PokemonForm);
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _pokemon_actions = __webpack_require__(8);
+
+var errorsReducer = function errorsReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  Object.freeze(state);
+  switch (action.type) {
+    case _pokemon_actions.RECEIVE_ERRORS:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+exports.default = errorsReducer;
 
 /***/ })
 /******/ ]);

@@ -176,3 +176,50 @@
 
    }
  }
+
+.new-pokemon{
+  border: 5px solid $red;
+  border-radius: 5px;
+  padding: 2%;
+  flex: 2;
+  h1{
+    color: $red;
+    text-align: center;
+    font-size: 2rem;
+  }
+  form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  label{
+    font-size: 1.25rem;
+    color: $red;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2%;
+    width: 70%;
+    input, select{
+      border: 1px solid $light-grey;
+      padding: 2%;
+      margin: 1% 0;
+    }
+  }
+}
+
+input{
+  &:focus{
+    outline: 2px solid $red;
+  }
+  &[type="submit"]{
+    color: $red;
+    font-size: 1.25rem;
+    border: 2px solid $red;
+    height: 50px;
+    &:hover{
+      cursor: pointer;
+      background-color: $red;
+      color: #fff;
+    }
+  }
+}
