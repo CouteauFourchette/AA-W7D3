@@ -135,6 +135,11 @@
      img {
       height: 30vh;
     }
+    div{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
      display: flex;
      justify-content: space-around;
      width: 80%;

@@ -639,7 +639,7 @@ module.exports = invariant;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.requestOnePokemon = exports.receiveOnePokemon = exports.requestAllPokemon = exports.receiveAllPokemon = exports.RECEIVE_ONE_POKEMON = exports.RECEIVE_ALL_POKEMON = undefined;
+exports.makeOnePokemon = exports.requestOnePokemon = exports.receiveOnePokemon = exports.requestAllPokemon = exports.receiveAllPokemon = exports.RECEIVE_ONE_POKEMON = exports.RECEIVE_ALL_POKEMON = undefined;
 
 var _api_util = __webpack_require__(95);
 
@@ -672,6 +672,16 @@ var requestOnePokemon = exports.requestOnePokemon = function requestOnePokemon(p
   return function (dispatch) {
     return (0, _api_util.fetchOnePokemon)(pokemonId).then(function (payload) {
       return dispatch(receiveOnePokemon(payload));
+    });
+  };
+};
+
+var makeOnePokemon = exports.makeOnePokemon = function makeOnePokemon(pokemon) {
+  return function (dispatch) {
+    return (0, _api_util.createOnePokemon)(pokemon).then(function (payload) {
+      return dispatch(receiveOnePokemon(payload));
+    }, function (error) {
+      return console.log(error);
     });
   };
 };
@@ -22295,6 +22305,14 @@ var fetchOnePokemon = exports.fetchOnePokemon = function fetchOnePokemon(pokemon
   });
 };
 
+var createOnePokemon = exports.createOnePokemon = function createOnePokemon(pokemon) {
+  return $.ajax({
+    method: 'POST',
+    url: '/api/pokemon/',
+    data: pokemon
+  });
+};
+
 /***/ }),
 /* 96 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -25991,6 +26009,10 @@ var _pokemon_detail_container = __webpack_require__(159);
 
 var _pokemon_detail_container2 = _interopRequireDefault(_pokemon_detail_container);
 
+var _pokemon_form_container = __webpack_require__(163);
+
+var _pokemon_form_container2 = _interopRequireDefault(_pokemon_form_container);
+
 var _reactRouter = __webpack_require__(27);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -26028,7 +26050,12 @@ var PokemonIndex = function (_Component) {
             return _react2.default.createElement(_pokemon_index_item2.default, { pokemon: pokemon, key: pokemon.name });
           })
         ),
-        _react2.default.createElement(_reactRouter.Route, { path: '/pokemon/:pokemon_id', component: _pokemon_detail_container2.default })
+        _react2.default.createElement(
+          _reactRouter.Switch,
+          null,
+          _react2.default.createElement(_reactRouter.Route, { path: '/pokemon/:pokemon_id', component: _pokemon_detail_container2.default }),
+          _react2.default.createElement(_reactRouter.Route, { exact: true, path: '/', component: _pokemon_form_container2.default })
+        )
       );
     }
   }]);
@@ -27249,6 +27276,137 @@ var ItemDetail = function ItemDetail(_ref) {
 };
 
 exports.default = ItemDetail;
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(16);
+
+var _reactRouter = __webpack_require__(27);
+
+var _pokemon_actions = __webpack_require__(8);
+
+var _pokemon_form = __webpack_require__(164);
+
+var _pokemon_form2 = _interopRequireDefault(_pokemon_form);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return { createOnePokemon: function createOnePokemon(pokemon) {
+      return dispatch((0, _pokemon_actions.makeOnePokemon)(pokemon));
+    } };
+};
+
+exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(null, mapDispatchToProps)(_pokemon_form2.default));
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TYPES = ['fire', 'electric', 'normal', 'ghost', 'psychic', 'water', 'bug', 'dragon', 'grass', 'fighting', 'ice', 'flying', 'poison', 'ground', 'rock', 'steel'];
+
+var PokemonForm = function (_Component) {
+  _inherits(PokemonForm, _Component);
+
+  function PokemonForm(props) {
+    _classCallCheck(this, PokemonForm);
+
+    var _this = _possibleConstructorReturn(this, (PokemonForm.__proto__ || Object.getPrototypeOf(PokemonForm)).call(this, props));
+
+    _this.state = {
+      name: "",
+      attack: 0,
+      defense: 0,
+      poke_type: "fire",
+      image_url: ""
+    };
+
+    _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    return _this;
+  }
+
+  _createClass(PokemonForm, [{
+    key: 'handleChange',
+    value: function handleChange(e) {
+      this.setState(_defineProperty({}, e.target.name, e.target.value));
+    }
+  }, {
+    key: 'handleSubmit',
+    value: function handleSubmit(e) {
+      e.preventDefault();
+      this.props.createOnePokemon({ pokemon: this.state });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'form',
+        { onSubmit: this.handleSubmit },
+        _react2.default.createElement('input', { onChange: this.handleChange,
+          placeholder: 'name', name: 'name', type: 'text', value: this.state.name }),
+        _react2.default.createElement('input', { onChange: this.handleChange,
+          placeholder: 'attack', name: 'attack', type: 'text', value: this.state.attack }),
+        _react2.default.createElement('input', { onChange: this.handleChange,
+          placeholder: 'defense', name: 'defense', type: 'text', value: this.state.defense }),
+        _react2.default.createElement(
+          'select',
+          { onChange: this.handleChange, name: 'poke_type', value: this.state.poke_type },
+          TYPES.map(function (type) {
+            return _react2.default.createElement(
+              'option',
+              { value: type },
+              type
+            );
+          })
+        ),
+        _react2.default.createElement('input', { onChange: this.handleChange,
+          placeholder: 'image url', name: 'image_url', type: 'text', value: this.state.image_url }),
+        _react2.default.createElement('input', { type: 'submit', value: 'Make Pokemon' })
+      );
+    }
+  }]);
+
+  return PokemonForm;
+}(_react.Component);
+
+exports.default = PokemonForm;
 
 /***/ })
 /******/ ]);
