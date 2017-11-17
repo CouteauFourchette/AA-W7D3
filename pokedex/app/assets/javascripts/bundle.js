@@ -27329,6 +27329,8 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = __webpack_require__(61);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -27370,8 +27372,12 @@ var PokemonForm = function (_Component) {
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(e) {
+      var _this2 = this;
+
       e.preventDefault();
-      this.props.createOnePokemon({ pokemon: this.state });
+      this.props.createOnePokemon({ pokemon: this.state }).then(function (newPokemon) {
+        _this2.props.history.push('pokemon/' + newPokemon.id);
+      });
     }
   }, {
     key: 'render',
@@ -27406,7 +27412,7 @@ var PokemonForm = function (_Component) {
   return PokemonForm;
 }(_react.Component);
 
-exports.default = PokemonForm;
+exports.default = (0, _reactRouterDom.withRouter)(PokemonForm);
 
 /***/ })
 /******/ ]);
